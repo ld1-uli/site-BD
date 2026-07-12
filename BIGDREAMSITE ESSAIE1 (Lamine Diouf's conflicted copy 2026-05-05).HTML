@@ -1126,7 +1126,14 @@
 </div>
 
 <script>
-  /* ══ CONFIG API ══ */
+  /* ══ CONFIG API ══
+     ⚠️ Une fois déployé sur GitHub Pages (hébergement statique, sans serveur),
+     'http://localhost:5000' n'existera plus. Les appels vers /commandes et /chat
+     échoueront silencieusement (catch), et le site basculera automatiquement
+     sur les réponses locales (bdRepondre) pour le chat — donc le site reste
+     fonctionnel même sans backend.
+     Si tu as un vrai backend en ligne (Render, Railway, etc.), remplace
+     l'URL ci-dessous par son adresse publique (https://...). */
   const API_URL = 'http://localhost:5000';
   const WA_NUM  = '221769338143';
 
@@ -1416,7 +1423,14 @@
     bdSendMsg();
   }
 
-  const GROQ_KEY = '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';
+  /* ⚠️ SÉCURITÉ : la clé d'API Groq codée en dur a été retirée.
+     Une clé placée directement dans le HTML/JS est publique dès que le
+     dépôt GitHub est en ligne (n'importe qui peut l'ouvrir avec "Voir le
+     code source"). Elle n'était de toute façon pas utilisée dans l'appel
+     fetch ci-dessous (qui interroge API_URL + '/chat', pas Groq
+     directement) — c'était donc une clé exposée pour rien.
+     Si tu veux utiliser Groq, fais l'appel depuis TON backend (le serveur
+     à l'adresse API_URL), jamais depuis le navigateur. */
   const GROQ_SYSTEM = `Tu es l'assistant officiel de BIGDREAM, une marque streetwear 100% Dakaroise. Tu réponds en français avec un ton jeune, stylé et chaleureux. Tu peux utiliser des mots comme "waw", "dope", "fire" naturellement. Sois concis (max 3-4 phrases).
 
 CATALOGUE :
@@ -1465,7 +1479,7 @@ Pour commander : dire de cliquer sur "Commander" sur la fiche produit ou contact
       bdHistory.push({ role: 'assistant', content: reply });
     } catch(e) {
       typing.style.display = 'none';
-      // Fallback sans API
+      // Fallback sans API (utilisé automatiquement sur GitHub Pages, tant qu'aucun backend n'est configuré)
       const reply = bdRepondre(bdHistory[bdHistory.length-1]?.content || '');
       bdAddMsg(reply, 'bot');
       bdHistory.push({ role: 'assistant', content: reply });
