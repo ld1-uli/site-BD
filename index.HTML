@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIGDREAM — Dakar</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --gray: #888;
+      --dark: #0d0d0d;
+      --border: #1f1f1f;
+      --accent: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      overflow-x: hidden;
+    }
+
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.93);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid #1a1a1a;
+      z-index: 1000;
+      animation: navIn 0.7s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes navIn { from{transform:translateY(-100%);opacity:0} to{transform:translateY(0);opacity:1} }
+
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 12px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative;
+    }
+
+    .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-wrap img:first-child { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+    .logo-wrap img:last-child { height: 46px; border-radius: 6px; object-fit: contain; background: black; }
+    .logo-fallback { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 5px; color: #fff; }
+
+    .menu-btn {
+      display: flex; align-items: center; gap: 10px;
+      background: none;
+      border: 1.5px solid #2a2a2a; color: #777;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      padding: 10px 20px; border-radius: 30px;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .menu-btn:hover, .menu-btn.open { border-color: #fff; color: #fff; }
+    .menu-btn i { font-size: 0.9rem; transition: transform 0.35s ease; }
+    .menu-btn.open i.fa-bars { display: none; }
+
+    .nav-dropdown {
+      position: absolute; top: calc(100% + 10px); right: 28px;
+      background: #0d0d0d; border: 1px solid #1e1e1e;
+      border-radius: 14px; overflow: hidden;
+      min-width: 240px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.9);
+      opacity: 0; transform: translateY(-8px) scale(0.97);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 999;
+    }
+    .nav-dropdown.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: all; }
+    .nav-dropdown-header { padding: 11px 22px; border-bottom: 1px solid #191919; font-size: 8px; letter-spacing: 5px; text-transform: uppercase; color: #2e2e2e; }
+    .nav-dropdown a {
+      display: flex; align-items: center; gap: 14px;
+      padding: 13px 22px; color: #555; text-decoration: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+      border-bottom: 1px solid #111; transition: all 0.2s; position: relative;
+    }
+    .nav-dropdown a:last-child { border-bottom: none; }
+    .nav-dropdown a::before { content:''; position:absolute; left:0; top:0; bottom:0; width:0; background:#fff; transition:width 0.2s ease; }
+    .nav-dropdown a:hover::before { width: 2px; }
+    .nav-dropdown a:hover { background: rgba(255,255,255,0.04); color: #fff; padding-left: 28px; }
+    .nav-icon { width: 30px; height: 30px; background: #111; border: 1px solid #1f1f1f; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+    .nav-icon i { color: #444; font-size: 0.7rem; transition: color 0.2s; }
+    .nav-dropdown a:hover .nav-icon { border-color: #333; }
+    .nav-dropdown a:hover .nav-icon i { color: #fff; }
+    .nav-dropdown .cta-link { background: rgba(255,255,255,0.04); color: #fff !important; justify-content: center; letter-spacing: 3px; }
+    .nav-dropdown .cta-link:hover { background: #fff !important; color: #000 !important; padding-left: 22px !important; }
+    .nav-dropdown .cta-link::before { display: none; }
+
+    #accueil { padding-top: 73px; }
+    .hero-video-wrap { position: relative; overflow: hidden; background: #050505; }
+    #accueil video { width: 100%; display: block; animation: videoIn 1.4s ease 0.2s both; }
+    @keyframes videoIn { from{opacity:0;transform:scale(1.03)} to{opacity:1;transform:scale(1)} }
+
+    #accueil-categories { padding: 90px 40px 70px; }
+    .section-label { text-align: center; font-size: 9px; font-weight: 700; letter-spacing: 7px; color: #383838; text-transform: uppercase; margin-bottom: 10px; font-family: 'Cormorant Garamond', serif; }
+    .section-heading { text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 52px; letter-spacing: 8px; color: #fff; margin-bottom: 6px; }
+    .section-line { width: 40px; height: 1px; background: #fff; margin: 0 auto 52px; }
+
+    .categories-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; max-width: 1100px; margin: 0 auto; }
+    .cat-card { position: relative; overflow: hidden; border-radius: 12px; cursor: pointer; border: 1px solid #1c1c1c; transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s; animation: fadeUp 0.7s ease both; }
+    .cat-card:nth-child(1){ animation-delay: 0.1s; }
+    .cat-card:nth-child(2){ animation-delay: 0.2s; }
+    .cat-card:nth-child(3){ animation-delay: 0.3s; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+    .cat-card:hover { transform: translateY(-10px); border-color: #3a3a3a; box-shadow: 0 28px 70px rgba(255,255,255,0.07); }
+    .cat-card img { width: 100%; height: 330px; object-fit: cover; display: block; transition: transform 0.6s; }
+    .cat-card:hover img { transform: scale(1.07); }
+    .cat-label { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, transparent 100%); padding: 50px 22px 20px; font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 5px; color: #fff; text-transform: uppercase; display: flex; justify-content: space-between; align-items: flex-end; }
+    .cat-arrow { font-size: 11px; color: #555; transition: color 0.3s, transform 0.3s; }
+    .cat-card:hover .cat-arrow { color: #fff; transform: translateX(5px); }
+
+    .divider { width: 100%; height: 1px; background: #131313; }
+
+    #produits { padding: 100px 40px 80px; }
+    .produits-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+    .tab-btn { background: none; border: 1.5px solid #2a2a2a; color: #444; font-family: 'Cormorant Garamond', serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; padding: 10px 26px; border-radius: 30px; cursor: pointer; transition: all 0.3s; text-transform: uppercase; }
+    .tab-btn:hover { border-color: #666; color: #aaa; }
+    .tab-btn.actif { border-color: #fff; color: #fff; background: rgba(255,255,255,0.05); }
+
+    .color-filters { display: flex; justify-content: center; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; animation: fadeIn 0.35s ease both; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .color-btn { background: none; border: 1px solid #222; color: #444; font-family: 'Cormorant Garamond', serif; font-size: 9px; font-weight: 700; letter-spacing: 2.5px; padding: 6px 16px; border-radius: 20px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+    .color-btn:hover, .color-btn.actif { border-color: #fff; color: #fff; background: rgba(255,255,255,0.06); }
+
+    .produits-panel { display: none; }
+    .produits-panel.actif { display: block; }
+
+    .prod-grille { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 22px; max-width: 1100px; margin: 0 auto; }
+
+    .carte { background: #080808; border: 1px solid #1a1a1a; border-radius: 14px; overflow: hidden; transition: transform 0.35s, border-color 0.35s, box-shadow 0.35s; animation: cardUp 0.5s ease both; }
+    .carte:hover { transform: translateY(-10px); border-color: #333; box-shadow: 0 24px 60px rgba(255,255,255,0.07); }
+    @keyframes cardUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+    .carte-img { width: 100%; aspect-ratio: 1/1; overflow: hidden; background: #0d0d0d; position: relative; }
+    .carte-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.55s; }
+    .carte:hover .carte-img img { transform: scale(1.08); }
+    .badge { position: absolute; top: 10px; right: 10px; font-size: 8px; font-weight: 700; letter-spacing: 2.5px; padding: 4px 11px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); color: #fff; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); font-family: 'Cormorant Garamond', serif; text-transform: uppercase; }
+
+    .carte-body { padding: 18px 20px 22px; }
+    .carte-nom { font-family: 'Bebas Neue', sans-serif; color: #fff; font-size: 16px; letter-spacing: 2px; margin-bottom: 6px; }
+    .carte-desc { color: #3a3a3a; font-size: 12px; margin-bottom: 16px; line-height: 1.7; }
+
+    .tailles { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+    .taille { min-width: 30px; height: 30px; padding: 0 8px; border: 1px solid #222; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #3a3a3a; font-family: 'Cormorant Garamond', serif; cursor: pointer; transition: all 0.2s; }
+    .taille:hover { border-color: #555; color: #888; }
+    .taille.sel { border-color: #fff; color: #fff; }
+
+    .carte-footer { display: flex; align-items: center; justify-content: space-between; }
+    .carte-prix { color: #fff; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; }
+    .btn-cmd { background: #fff; color: #000; border: none; font-family: 'Cormorant Garamond', serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+    .btn-cmd:hover { background: #ddd; transform: scale(1.04); }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #0a0a0a; border: 1px solid #202020; border-radius: 20px; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s cubic-bezier(0.22,1,0.36,1); }
+    @keyframes modalIn { from{opacity:0;transform:scale(0.94) translateY(24px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+    .modal-header { padding: 28px 32px 20px; border-bottom: 1px solid #181818; display: flex; align-items: center; justify-content: space-between; }
+    .modal-header h3 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 4px; text-transform: uppercase; }
+    .modal-close { background: none; border: 1px solid #222; color: #444; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .modal-close:hover { border-color: #fff; color: #fff; }
+
+    .modal-produit-info { padding: 18px 32px; background: #060606; border-bottom: 1px solid #111; display: flex; align-items: center; gap: 16px; }
+    .modal-produit-icon { width: 52px; height: 52px; background: #0f0f0f; border: 1px solid #1f1f1f; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+    .modal-produit-nom { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 2px; margin-bottom: 4px; }
+    .modal-produit-prix { color: #555; font-size: 13px; }
+
+    .modal-body { padding: 24px 32px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 9px; font-weight: 700; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 8px; font-family: 'Cormorant Garamond', serif; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; background: #050505; border: 1.5px solid #1a1a1a; color: #bbb; font-family: 'Cormorant Garamond', serif; font-size: 14px; padding: 12px 16px; border-radius: 10px; transition: border-color 0.3s; outline: none; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #444; }
+    .form-group select option { background: #0a0a0a; }
+    .form-group textarea { resize: vertical; min-height: 72px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .tailles-modal { display: flex; gap: 8px; flex-wrap: wrap; }
+    .taille-opt { padding: 8px 16px; border: 1.5px solid #1e1e1e; border-radius: 8px; font-family: 'Cormorant Garamond', serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #3a3a3a; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+    .taille-opt:hover { border-color: #555; color: #888; }
+    .taille-opt.sel { border-color: #fff; color: #fff; background: rgba(255,255,255,0.05); }
+
+    .total-row { background: #060606; border: 1px solid #181818; border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+    .total-label { font-size: 9px; font-weight: 700; letter-spacing: 3px; color: #444; text-transform: uppercase; }
+    .total-val { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; color: #fff; }
+
+    .modal-footer { padding: 18px 32px; border-top: 1px solid #181818; display: flex; gap: 10px; }
+    .btn-submit { flex: 1; background: #fff; color: #000; border: none; font-family: 'Cormorant Garamond', serif; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; padding: 14px; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+    .btn-submit:hover { background: #e0e0e0; }
+    .btn-submit:disabled { background: #333; color: #666; cursor: not-allowed; }
+    .btn-cancel { background: none; border: 1.5px solid #1e1e1e; color: #444; font-family: 'Cormorant Garamond', serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; padding: 14px 20px; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+    .btn-cancel:hover { border-color: #555; color: #888; }
+
+    #apropos { padding: 100px 40px; }
+    .apropos-inner { max-width: 940px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+    .apropos-text h2 { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 5px; margin-bottom: 22px; line-height: 1; }
+    .apropos-text h2 span { color: #2a2a2a; }
+    .apropos-text p { color: #555; font-size: 15px; line-height: 2; margin-bottom: 16px; }
+    .apropos-text p strong { color: #999; }
+    .apropos-img { border-radius: 14px; overflow: hidden; border: 1px solid #1a1a1a; transition: transform 0.45s; }
+    .apropos-img:hover { transform: scale(1.02); }
+    .apropos-img img { width: 100%; display: block; }
+
+    .apropos-values { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; max-width: 940px; margin: 60px auto 0; }
+    .val-card { background: #080808; border: 1px solid #161616; border-radius: 12px; padding: 30px 22px; text-align: center; transition: transform 0.3s, border-color 0.3s; }
+    .val-card:hover { transform: translateY(-6px); border-color: #2a2a2a; }
+    .val-card i { font-size: 24px; color: #404040; margin-bottom: 16px; display: block; }
+    .val-card h4 { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 4px; margin-bottom: 10px; }
+    .val-card p { font-size: 12px; color: #444; line-height: 1.8; }
+
+    .newsletter { text-align: center; padding: 90px 40px; border-top: 1px solid #111; border-bottom: 1px solid #111; background: #030303; }
+    .newsletter i { font-size: 42px; color: #2a2a2a; margin-bottom: 18px; display: block; }
+    .newsletter h3 { font-family: 'Bebas Neue', sans-serif; font-size: 34px; letter-spacing: 8px; margin-bottom: 12px; }
+    .newsletter p { color: #444; font-size: 14px; margin-bottom: 32px; }
+    .newsletter-form { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .newsletter-form input { width: 380px; padding: 13px 22px; background: #0a0a0a; border: 1.5px solid #222; color: #aaa; font-family: 'Cormorant Garamond', serif; font-size: 13px; border-radius: 30px; transition: border-color 0.3s; }
+    .newsletter-form input:focus { outline: none; border-color: #555; }
+    .newsletter-form button { background: #fff; color: #000; border: none; font-family: 'Cormorant Garamond', serif; font-size: 10px; font-weight: 700; letter-spacing: 3px; padding: 13px 28px; border-radius: 30px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+    .newsletter-form button:hover { background: #ddd; transform: scale(1.04); }
+
+    #contact { padding: 100px 40px 80px; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; max-width: 960px; margin: 0 auto; }
+    .contact-info h3 { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 4px; margin-bottom: 28px; }
+    .contact-item { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; padding: 18px 20px; background: #080808; border: 1px solid #161616; border-radius: 12px; transition: border-color 0.3s; }
+    .contact-item:hover { border-color: #2a2a2a; }
+    .contact-item-icon { width: 38px; height: 38px; background: #0f0f0f; border: 1px solid #1f1f1f; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .contact-item-icon i { color: #404040; font-size: 13px; }
+    .contact-item-label { font-size: 9px; font-weight: 700; letter-spacing: 3px; color: #333; text-transform: uppercase; margin-bottom: 4px; }
+    .contact-item-value { font-size: 14px; color: #777; }
+
+    .footer-socials { display: flex; gap: 10px; margin-top: 24px; }
+    .social-btn { width: 42px; height: 42px; border-radius: 10px; background: #0f0f0f; border: 1px solid #1c1c1c; display: flex; align-items: center; justify-content: center; color: #555; font-size: 15px; text-decoration: none; transition: all 0.25s; }
+    .social-btn:hover { background: #fff; color: #000; transform: scale(1.12) rotate(4deg); border-color: #fff; }
+
+    .contact-form-wrap { background: #070707; border: 1px solid #191919; border-radius: 16px; padding: 34px; }
+    .contact-form-wrap h3 { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 4px; margin-bottom: 26px; }
+
+    footer { background: #040404; border-top: 1px solid #111; padding: 80px 40px 0; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-grid-slim { display: flex; justify-content: center; gap: 120px; margin-bottom: 50px; flex-wrap: wrap; }
+    .footer-bottom { border-top: 1px solid #0f0f0f; padding: 28px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .footer-copy { font-size: 11px; color: #2a2a2a; letter-spacing: 2px; }
+    .footer-col h5 { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 4px; color: #2e2e2e; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #0f0f0f; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 13px; }
+    .footer-col ul li a { color: #333; font-size: 13px; text-decoration: none; letter-spacing: 1px; transition: color 0.2s; }
+    .footer-col ul li a:hover { color: #fff; }
+
+    .toast { position: fixed; bottom: 28px; right: 28px; background: #0d0d0d; border: 1px solid #222; border-radius: 12px; padding: 15px 22px; font-family: 'Cormorant Garamond', serif; font-size: 14px; letter-spacing: 1px; z-index: 9999; transform: translateY(80px); opacity: 0; transition: all 0.4s; display: flex; align-items: center; gap: 10px; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: #1e3a1e; color: #6fcf97; }
+    .toast.error { border-color: #3a1e1e; color: #eb5757; }
+    .toast.loading { border-color: #1e2a3a; color: #6fa3cf; }
+
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.75s ease, transform 0.75s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .ticker-banner { background: #fff; color: #000; overflow: hidden; white-space: nowrap; border-top: 3px solid #000; padding: 18px 0; position: relative; cursor: default; }
+    .ticker-banner::before, .ticker-banner::after { content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2; pointer-events: none; }
+    .ticker-banner::before { left: 0; background: linear-gradient(to right, #fff, transparent); }
+    .ticker-banner::after { right: 0; background: linear-gradient(to left, #fff, transparent); }
+    .ticker-track { display: inline-flex; align-items: center; gap: 32px; animation: ticker 22s linear infinite; will-change: transform; }
+    .ticker-banner:hover .ticker-track { animation-play-state: paused; }
+    .ticker-track span { font-family: 'Bebas Neue', 'Cambria', Georgia, serif; font-size: 26px; font-weight: 900; letter-spacing: 8px; text-transform: uppercase; color: #000; flex-shrink: 0; }
+    .ticker-track .ticker-dot { font-size: 14px; letter-spacing: 0; color: #888; flex-shrink: 0; }
+    @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #666; border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ═══════════════════════════════════════════
+       AGENT IA — BOUTON FLOTTANT + CHAT WIDGET
+    ═══════════════════════════════════════════ */
+    #bd-agent-btn {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: #fff; color: #000;
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 8px 32px rgba(255,255,255,0.15);
+      z-index: 8000;
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: agentPop 0.5s cubic-bezier(0.22,1,0.36,1) 1.5s both;
+    }
+    @keyframes agentPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+    #bd-agent-btn:hover { transform: scale(1.1); box-shadow: 0 12px 40px rgba(255,255,255,0.22); }
+    #bd-agent-btn.open { background: #1a1a1a; color: #fff; border: 1px solid #333; }
+
+    #bd-agent-notif {
+      position: absolute; top: -2px; right: -2px;
+      width: 14px; height: 14px; background: #4caf7d;
+      border-radius: 50%; border: 2px solid #000;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
+
+    #bd-agent-chat {
+      position: fixed; bottom: 100px; right: 28px;
+      width: 360px; max-width: calc(100vw - 40px);
+      background: #0a0a0a; border: 1px solid #222;
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.9);
+      z-index: 7999;
+      display: none; flex-direction: column;
+      animation: chatSlideIn 0.35s cubic-bezier(0.22,1,0.36,1);
+      max-height: 520px;
+    }
+    @keyframes chatSlideIn { from{opacity:0;transform:translateY(24px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    #bd-agent-chat.open { display: flex; }
+
+    #bd-chat-header {
+      background: #111; padding: 14px 18px;
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid #1a1a1a;
+      flex-shrink: 0;
+    }
+    .bd-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #fff; color: #000;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px;
+      flex-shrink: 0;
+    }
+    .bd-hdr-name { font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 3px; color: #fff; }
+    .bd-hdr-status { font-size: 11px; color: #4caf7d; display: flex; align-items: center; gap: 5px; margin-top: 1px; }
+    .bd-hdr-dot { width: 6px; height: 6px; background: #4caf7d; border-radius: 50%; }
+    #bd-chat-close {
+      margin-left: auto; background: none; border: 1px solid #2a2a2a;
+      color: #555; width: 28px; height: 28px; border-radius: 50%;
+      cursor: pointer; font-size: 12px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    #bd-chat-close:hover { border-color: #fff; color: #fff; }
+
+    #bd-messages {
+      flex: 1; overflow-y: auto; padding: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+      background: #060606;
+      scrollbar-width: thin; scrollbar-color: #222 transparent;
+    }
+    #bd-messages::-webkit-scrollbar { width: 4px; }
+    #bd-messages::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+
+    .bd-msg {
+      max-width: 85%; padding: 10px 14px;
+      font-family: 'Cormorant Garamond', serif; font-size: 14px; line-height: 1.55;
+      border-radius: 16px;
+    }
+    .bd-msg.bot {
+      background: #111; border: 1px solid #1e1e1e;
+      border-radius: 16px 16px 16px 4px;
+      color: #bbb; align-self: flex-start;
+    }
+    .bd-msg.user {
+      background: #fff; color: #000;
+      border-radius: 16px 16px 4px 16px;
+      align-self: flex-end;
+      font-weight: 600;
+    }
+    .bd-msg a { color: #4caf7d; text-decoration: underline; }
+
+    #bd-typing {
+      display: none; align-self: flex-start;
+      background: #111; border: 1px solid #1e1e1e;
+      border-radius: 16px 16px 16px 4px;
+      padding: 10px 16px; gap: 5px; align-items: center;
+    }
+    #bd-typing span {
+      width: 6px; height: 6px; background: #444;
+      border-radius: 50%; animation: bdBounce 1.2s infinite; display: inline-block;
+    }
+    #bd-typing span:nth-child(2) { animation-delay: 0.2s; }
+    #bd-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bdBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+    .bd-quick-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .bd-qbtn {
+      font-size: 11px; padding: 5px 10px;
+      border: 1px solid #2a2a2a; border-radius: 10px;
+      background: transparent; color: #555; cursor: pointer;
+      font-family: 'Cormorant Garamond', serif;
+      transition: all 0.2s;
+    }
+    .bd-qbtn:hover { border-color: #fff; color: #fff; }
+
+    #bd-chat-input {
+      display: flex; gap: 8px; padding: 10px 12px;
+      border-top: 1px solid #1a1a1a; background: #0a0a0a;
+      flex-shrink: 0;
+    }
+    #bd-user-input {
+      flex: 1; border: 1px solid #1e1e1e; border-radius: 20px;
+      padding: 9px 14px; font-size: 13px;
+      background: #111; color: #bbb;
+      font-family: 'Cormorant Garamond', serif; outline: none;
+      transition: border-color 0.3s;
+    }
+    #bd-user-input:focus { border-color: #444; }
+    #bd-user-input::placeholder { color: #333; }
+    #bd-send {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #fff; color: #000; border: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 13px; flex-shrink: 0; transition: background 0.2s;
+    }
+    #bd-send:hover { background: #ddd; }
+
+    @media (max-width: 768px) {
+      #bd-agent-btn { bottom: 20px; right: 16px; width: 52px; height: 52px; font-size: 20px; }
+      #bd-agent-chat { bottom: 84px; right: 12px; left: 12px; width: auto; max-height: 460px; }
+      .toast { bottom: 90px; }
+    }
+
+    @media (max-width: 1024px) {
+      .nav-inner { padding: 12px 20px; }
+      #accueil-categories { padding: 70px 24px 50px; }
+      .categories-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .cat-card:last-child { grid-column: span 2; }
+      .cat-card img { height: 280px; }
+      #produits { padding: 70px 24px 60px; }
+      .prod-grille { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .apropos-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .apropos-text h2 { font-size: 38px; }
+      .apropos-values { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .contact-grid { gap: 36px; }
+      .footer-grid-slim { gap: 60px; }
+      #apropos { padding: 70px 24px; }
+      #contact { padding: 70px 24px 60px; }
+      footer { padding: 60px 24px 0; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-inner { padding: 10px 16px; }
+      .logo-wrap img:last-child { height: 38px; }
+      .logo-wrap img:first-child { width: 34px; height: 34px; }
+      .menu-btn { padding: 9px 14px; font-size: 9px; }
+      .menu-btn span { display: none; }
+      .nav-dropdown { right: 12px; min-width: 200px; }
+      #accueil { padding-top: 64px; }
+      #accueil video { min-height: 260px; object-fit: cover; }
+      #accueil-categories { padding: 50px 16px 40px; }
+      .section-heading { font-size: 34px; letter-spacing: 5px; }
+      .section-label { font-size: 8px; letter-spacing: 5px; }
+      .categories-grid { grid-template-columns: 1fr; gap: 12px; }
+      .cat-card:last-child { grid-column: span 1; }
+      .cat-card img { height: 220px; }
+      .cat-label { font-size: 15px; letter-spacing: 3px; padding: 36px 16px 16px; }
+      #produits { padding: 50px 16px 50px; }
+      .produits-tabs { gap: 8px; margin-bottom: 24px; }
+      .tab-btn { font-size: 9px; padding: 9px 18px; letter-spacing: 2px; }
+      .color-filters { gap: 6px; margin-bottom: 24px; }
+      .color-btn { font-size: 8px; padding: 5px 12px; letter-spacing: 2px; }
+      .prod-grille { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .carte { border-radius: 10px; }
+      .carte-img { aspect-ratio: 1/1; }
+      .carte-body { padding: 12px 14px 16px; }
+      .carte-nom { font-size: 13px; letter-spacing: 1.5px; margin-bottom: 4px; }
+      .carte-desc { font-size: 11px; margin-bottom: 10px; line-height: 1.5; }
+      .tailles { gap: 4px; margin-bottom: 12px; }
+      .taille { min-width: 26px; height: 26px; font-size: 9px; border-radius: 5px; }
+      .carte-footer { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .carte-prix { font-size: 18px; }
+      .btn-cmd { width: 100%; text-align: center; padding: 9px 14px; font-size: 9px; letter-spacing: 1.5px; }
+      #apropos { padding: 50px 16px; }
+      .apropos-inner { grid-template-columns: 1fr; gap: 30px; }
+      .apropos-text { order: 1; }
+      .apropos-img { order: 2; }
+      .apropos-text h2 { font-size: 32px; letter-spacing: 3px; margin-bottom: 16px; }
+      .apropos-text p { font-size: 13px; line-height: 1.9; margin-bottom: 12px; }
+      .apropos-values { grid-template-columns: 1fr; gap: 12px; margin-top: 36px; }
+      .val-card { padding: 22px 18px; }
+      .newsletter { padding: 60px 16px; }
+      .newsletter i { font-size: 32px; margin-bottom: 14px; }
+      .newsletter h3 { font-size: 26px; letter-spacing: 5px; margin-bottom: 10px; }
+      .newsletter p { font-size: 13px; margin-bottom: 24px; }
+      .newsletter-form { flex-direction: column; align-items: center; gap: 10px; }
+      .newsletter-form input { width: 100%; max-width: 340px; padding: 12px 18px; }
+      .newsletter-form button { width: 100%; max-width: 340px; padding: 12px 24px; }
+      #contact { padding: 50px 16px 50px; }
+      .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+      .contact-info h3 { font-size: 24px; letter-spacing: 3px; margin-bottom: 20px; }
+      .contact-item { padding: 14px 16px; gap: 12px; border-radius: 10px; }
+      .contact-form-wrap { padding: 22px 18px; border-radius: 14px; }
+      .contact-form-wrap h3 { font-size: 16px; letter-spacing: 3px; margin-bottom: 20px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
+      .form-group { margin-bottom: 14px; }
+      .modal-overlay { padding: 12px; align-items: flex-end; }
+      .modal { border-radius: 20px 20px 16px 16px; max-height: 92vh; }
+      .modal-header { padding: 20px 20px 16px; }
+      .modal-header h3 { font-size: 17px; letter-spacing: 3px; }
+      .modal-produit-info { padding: 14px 20px; gap: 12px; }
+      .modal-body { padding: 18px 20px; }
+      .modal-footer { padding: 14px 20px; gap: 8px; }
+      footer { padding: 50px 16px 0; }
+      .footer-grid-slim { flex-direction: column; gap: 32px; margin-bottom: 36px; align-items: flex-start; padding: 0 4px; }
+      .footer-bottom { flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 22px 0; }
+    }
+
+    @media (max-width: 430px) {
+      .section-heading { font-size: 28px; letter-spacing: 4px; }
+      .prod-grille { grid-template-columns: 1fr; gap: 14px; }
+      .carte-img { aspect-ratio: 4/3; }
+      .carte-footer { flex-direction: row; align-items: center; }
+      .btn-cmd { width: auto; }
+    }
+
+    /* ═══════════════════════════════════════════
+       LOADING SCREEN — LOGO MONTRE SVG
+    ═══════════════════════════════════════════ */
+    #bd-loader {
+      position: fixed; inset: 0; z-index: 99999;
+      background: #000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 28px;
+      transition: opacity 0.8s ease;
+    }
+    #bd-loader.hide { opacity: 0; pointer-events: none; }
+
+    .bd-logo-watch-wrap {
+      position: relative;
+      filter: drop-shadow(0 0 28px rgba(255,255,255,0.06));
+      animation: watchFloat 3s ease-in-out infinite;
+    }
+    @keyframes watchFloat {
+      0%,100% { transform: translateY(0px); }
+      50%      { transform: translateY(-6px); }
+    }
+
+    #bd-arc-progress {
+      animation: arcFill 2.8s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes arcFill {
+      0%   { stroke-dashoffset: 578; opacity: 0.3; }
+      10%  { opacity: 1; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    .bd-loader-slogan {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 10px; letter-spacing: 6px;
+      color: #2a2a2a; text-transform: uppercase;
+      animation: fadeInSlogan 1s ease 0.5s both;
+    }
+    @keyframes fadeInSlogan { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+    .bd-loader-bar-wrap {
+      width: 140px; height: 1px;
+      background: #111; overflow: hidden;
+    }
+    .bd-loader-bar {
+      height: 100%; background: #fff;
+      animation: loaderBar 2.8s cubic-bezier(0.4,0,0.2,1) forwards;
+    }
+    @keyframes loaderBar {
+      0%  { width: 0%; }
+      40% { width: 55%; }
+      80% { width: 90%; }
+      100%{ width: 100%; }
+    }
+    .bd-loader-pct {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 11px; letter-spacing: 3px; color: #333;
+    }
+
+    /* ═══════════════════════════════════════════
+       ANIMATION COMMANDE PASSÉE
+    ═══════════════════════════════════════════ */
+    #bd-success-overlay {
+      position: fixed; inset: 0; z-index: 9998;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center;
+      flex-direction: column; gap: 24px;
+    }
+    #bd-success-overlay.show { display: flex; }
+
+    .bd-success-circle {
+      width: 110px; height: 110px; border-radius: 50%;
+      border: 2px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      animation: successCircleIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes successCircleIn {
+      from { transform: scale(0.4); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .bd-success-circle::before {
+      content: '';
+      position: absolute; inset: -8px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      animation: successRipple 1.8s ease infinite;
+    }
+    @keyframes successRipple {
+      0%   { transform: scale(1);   opacity: 0.4; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+    .bd-success-check {
+      font-size: 42px; color: #fff;
+      animation: checkPop 0.5s cubic-bezier(0.22,1,0.36,1) 0.4s both;
+    }
+    @keyframes checkPop {
+      from { transform: scale(0) rotate(-20deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+    }
+    .bd-success-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px; letter-spacing: 6px;
+      color: #fff;
+      animation: fadeUpText 0.5s ease 0.6s both;
+    }
+    .bd-success-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px; color: #555; letter-spacing: 2px;
+      text-align: center; line-height: 1.8;
+      animation: fadeUpText 0.5s ease 0.75s both;
+    }
+    @keyframes fadeUpText {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .bd-success-wa {
+      display: flex; align-items: center; gap: 10px;
+      background: #fff; color: #000;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 12px 28px; border-radius: 30px; border: none;
+      cursor: pointer;
+      animation: fadeUpText 0.5s ease 0.9s both;
+      transition: background 0.2s;
+    }
+    .bd-success-wa:hover { background: #ddd; }
+    .bd-success-wa i { font-size: 16px; color: #25D366; }
+
+    .bd-success-particles {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .bd-particle {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      animation: particleFly 1.2s ease forwards;
+    }
+    @keyframes particleFly {
+      0%   { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<!-- ═══ LOADING SCREEN — LOGO MONTRE SVG ═══ -->
+<div id="bd-loader">
+  <div class="bd-logo-watch-wrap">
+    <svg id="bd-logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" width="180" height="180">
+      <!-- Cercle extérieur fin -->
+      <circle cx="100" cy="100" r="96" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+      <!-- Cercle principal -->
+      <circle cx="100" cy="100" r="88" fill="none" stroke="#2a2a2a" stroke-width="0.5"/>
+      <!-- Arc lumineux animé -->
+      <circle cx="100" cy="100" r="92" fill="none" stroke="#fff" stroke-width="1.5"
+        stroke-dasharray="578" stroke-dashoffset="578"
+        stroke-linecap="round"
+        id="bd-arc-progress"
+        transform="rotate(-90 100 100)"/>
+      <!-- 4 points cardinaux minimalistes -->
+      <rect x="99" y="10"  width="2" height="10" rx="1" fill="#555"/>
+      <rect x="99" y="180" width="2" height="10" rx="1" fill="#333"/>
+      <rect x="10"  y="99" width="10" height="2" rx="1" fill="#333"/>
+      <rect x="180" y="99" width="10" height="2" rx="1" fill="#333"/>
+      <!-- 8 petits points intermédiaires -->
+      <circle cx="100" cy="20"  r="1.2" fill="#222"/>
+      <circle cx="100" cy="180" r="1.2" fill="#222"/>
+      <circle cx="20"  cy="100" r="1.2" fill="#222"/>
+      <circle cx="180" cy="100" r="1.2" fill="#222"/>
+      <circle cx="148" cy="28"  r="1"   fill="#1e1e1e"/>
+      <circle cx="172" cy="52"  r="1"   fill="#1e1e1e"/>
+      <circle cx="172" cy="148" r="1"   fill="#1e1e1e"/>
+      <circle cx="148" cy="172" r="1"   fill="#1e1e1e"/>
+      <circle cx="52"  cy="28"  r="1"   fill="#1e1e1e"/>
+      <circle cx="28"  cy="52"  r="1"   fill="#1e1e1e"/>
+      <circle cx="28"  cy="148" r="1"   fill="#1e1e1e"/>
+      <circle cx="52"  cy="172" r="1"   fill="#1e1e1e"/>
+      <!-- Texte BIGDREAM -->
+      <text x="100" y="96" text-anchor="middle"
+        font-family="'Bebas Neue', sans-serif"
+        font-size="22" letter-spacing="6"
+        fill="#fff">BIGDREAM</text>
+      <!-- Ligne fine sous le texte -->
+      <line x1="62" y1="102" x2="138" y2="102" stroke="#222" stroke-width="0.5"/>
+      <!-- Sous-texte -->
+      <text x="100" y="115" text-anchor="middle"
+        font-family="'Cormorant Garamond', serif"
+        font-size="7" letter-spacing="3"
+        fill="#333">DAKAR</text>
+      <!-- Aiguille heures -->
+      <line id="bd-hand-h" x1="100" y1="100" x2="100" y2="68"
+        stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Aiguille minutes -->
+      <line id="bd-hand-m" x1="100" y1="100" x2="100" y2="56"
+        stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Aiguille secondes -->
+      <line id="bd-hand-s" x1="100" y1="112" x2="100" y2="52"
+        stroke="#fff" stroke-width="0.8" stroke-linecap="round"/>
+      <!-- Point central -->
+      <circle cx="100" cy="100" r="3.5" fill="#fff"/>
+      <circle cx="100" cy="100" r="1.5" fill="#000"/>
+    </svg>
+  </div>
+  <div class="bd-loader-slogan">Pursue Your Dream</div>
+  <div class="bd-loader-bar-wrap">
+    <div class="bd-loader-bar"></div>
+  </div>
+  <div class="bd-loader-pct" id="bd-loader-pct">0%</div>
+</div>
+
+<!-- ═══ COMMANDE SUCCESS ═══ -->
+<div id="bd-success-overlay">
+  <div class="bd-success-particles" id="bd-particles"></div>
+  <div class="bd-success-circle">
+    <i class="fa-solid fa-check bd-success-check"></i>
+  </div>
+  <div class="bd-success-title">COMMANDE ENVOYÉE</div>
+  <div class="bd-success-sub">
+    Ta commande a bien été reçue 🔥<br>
+    On te contacte très vite sur WhatsApp !
+  </div>
+  <button class="bd-success-wa" id="bd-success-wa-btn">
+    <i class="fa-brands fa-whatsapp"></i>
+    OUVRIR WHATSAPP
+  </button>
+</div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo-wrap" href="#accueil">
+      <img src="BIGDREAM LOGO.jpeg" alt="Logo" onerror="this.style.display='none'">
+      <img src="bigdream ecriture.jpeg" alt="BIGDREAM" onerror="this.outerHTML='<span class=\'logo-fallback\'>BIGDREAM</span>'">
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false">
+      <i class="fa-solid fa-bars" id="menuIcon"></i>
+      <span>Menu</span>
+    </button>
+    <div class="nav-dropdown" id="navDropdown">
+      <div class="nav-dropdown-header">Navigation</div>
+      <a href="#accueil"><div class="nav-icon"><i class="fa-solid fa-house"></i></div>Accueil</a>
+      <a href="#produits"><div class="nav-icon"><i class="fa-solid fa-shirt"></i></div>Produits</a>
+      <a href="#apropos"><div class="nav-icon"><i class="fa-solid fa-circle-info"></i></div>À Propos</a>
+      <a href="#contact" class="cta-link"><i class="fa-solid fa-paper-plane" style="margin-right:8px"></i>Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="accueil">
+  <div class="hero-video-wrap">
+    <video autoplay muted loop playsinline preload="auto" poster="image.jpg">
+      <source src="BIGDREAMvideo.mp4" type="video/mp4"/>
+    </video>
+  </div>
+  <div id="accueil-categories" class="reveal">
+    <p class="section-label">Collection 2026</p>
+    <h2 class="section-heading">CATÉGORIES</h2>
+    <div class="section-line"></div>
+    <div class="categories-grid">
+      <div class="cat-card" onclick="scrollToTab('tshirt')">
+        <img src="tee-shirt bigdream.jpeg" alt="Tee-Shirts" onerror="this.style.background='#111'">
+        <div class="cat-label">TEE-SHIRTS <span class="cat-arrow"><i class="fa-solid fa-arrow-right"></i></span></div>
+      </div>
+      <div class="cat-card" onclick="scrollToTab('bonnet')">
+        <img src="bonnet_fond_blanc (1).jpeg" alt="Bonnets" onerror="this.style.background='#111'">
+        <div class="cat-label">BONNETS <span class="cat-arrow"><i class="fa-solid fa-arrow-right"></i></span></div>
+      </div>
+      <div class="cat-card" onclick="scrollToTab('collant')">
+        <img src="collant bigdream.jpeg" alt="Collants" onerror="this.style.background='#111'">
+        <div class="cat-label">COLLANTS <span class="cat-arrow"><i class="fa-solid fa-arrow-right"></i></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PRODUITS -->
+<section id="produits">
+  <p class="section-label reveal">Shop</p>
+  <h2 class="section-heading reveal">NOS PRODUITS</h2>
+  <div class="section-line"></div>
+
+  <div class="produits-tabs">
+    <button class="tab-btn actif" onclick="ouvrirTab('tshirt',this)">TEE-SHIRTS</button>
+    <button class="tab-btn" onclick="ouvrirTab('bonnet',this)">BONNETS</button>
+    <button class="tab-btn" onclick="ouvrirTab('collant',this)">COLLANTS</button>
+  </div>
+
+  <div class="color-filters" id="cf-tshirt">
+    <button class="color-btn actif" onclick="filtrer('tshirt','tous',this)">TOUS</button>
+    <button class="color-btn" onclick="filtrer('tshirt','blanc',this)">BLANC</button>
+    <button class="color-btn" onclick="filtrer('tshirt','noir',this)">NOIR</button>
+    <button class="color-btn" onclick="filtrer('tshirt','gris',this)">GRIS</button>
+  </div>
+  <div class="color-filters" id="cf-bonnet" style="display:none">
+    <button class="color-btn actif" onclick="filtrer('bonnet','tous',this)">TOUS</button>
+    <button class="color-btn" onclick="filtrer('bonnet','blanc',this)">BLANC</button>
+    <button class="color-btn" onclick="filtrer('bonnet','noir',this)">NOIR</button>
+    <button class="color-btn" onclick="filtrer('bonnet','gris',this)">GRIS</button>
+  </div>
+  <div class="color-filters" id="cf-collant" style="display:none">
+    <button class="color-btn actif" onclick="filtrer('collant','tous',this)">TOUS</button>
+    <button class="color-btn" onclick="filtrer('collant','blanc',this)">BLANC</button>
+    <button class="color-btn" onclick="filtrer('collant','noir',this)">NOIR</button>
+    <button class="color-btn" onclick="filtrer('collant','gris',this)">GRIS</button>
+  </div>
+
+  <!-- TEE-SHIRTS -->
+  <div class="produits-panel actif" id="panel-tshirt">
+    <div class="prod-grille" id="grille-tshirt">
+      <div class="carte" data-couleur="blanc" data-id="tshirt-blanc" data-nom="Tee-shirt BIGDREAM — Blanc" data-prix="12000" data-icon="👕" data-tailles="XS,S,M,L,XL">
+        <div class="carte-img"><img src="tee-shirt bigdream.jpeg" alt="Tee-shirt Blanc"><span class="badge">BLANC</span></div>
+        <div class="carte-body">
+          <p class="carte-nom">TEE-SHIRT BIGDREAM — BLANC</p>
+          <p class="carte-desc">100% coton premium · Coupe oversize · Logo brodé</p>
+          <div class="tailles"><div class="taille">XS</div><div class="taille">S</div><div class="taille">M</div><div class="taille">L</div><div class="taille">XL</div><div class="taille">XXL</div></div>
+          <div class="carte-footer"><span class="carte-prix">12 000 F</span><button class="btn-cmd" onclick="ouvrirCommande(this.closest('.carte'))">COMMANDER</button></div>
+        </div>
+      </div>
+      <div class="carte" data-couleur="noir" data-id="tshirt-noir" data-nom="Tee-shirt BIGDREAM — Noir" data-prix="12000" data-icon="👕" data-tailles="XS,S,M,L,XL,XXL">
+        <div class="carte-img"><img src="tee-shirt bigdream.jpeg" alt="Tee-shirt Noir"><span class="badge">NOIR</span></div>
+        <div class="carte-body">
+          <p class="carte-nom">TEE-SHIRT BIGDREAM — NOIR</p>
+          <p class="carte-desc">100% coton premium · Coupe oversize · Logo brodé</p>
+          <div class="tailles"><div class="taille">XS</div><div class="taille">S</div><div class="taille">M</div><div class="taille">L</div><div class="taille">XL</div><div class="taille">XXL</div></div>
+          <div class="carte-footer"><span class="carte-prix">12 000 F</span><button class="btn-cmd" onclick="ouvrirCommande(this.closest('.carte'))">COMMANDER</button></div>
+        </div>
+      </div>
+      <div class="carte" data-couleur="gris" data-id="tshirt-gris" data-nom="Tee-shirt BIGDREAM — Gris" data-prix="12000" data-icon="👕" data-tailles="XS,S,M,L,XL,XXL">
+        <div class="carte-img"><img src="tee-shirt bigdream.jpeg" alt="Tee-shirt Gris"><span class="badge">GRIS</span></div>
+        <div class="carte-body">
+          <p class="carte-nom">TEE-SHIRT BIGDREAM — GRIS</p>
+          <p class="carte-desc">100% coton premium · Coupe oversize · Logo brodé</p>
+          <div class="tailles"><div class="taille">XS</div><div class="taille">S</div><div class="taille">M</div><div class="taille">L</div><div class="taille">XL</div><div class="taille">XXL</div></div>
+          <div class="carte-footer"><span class="carte-prix">12 000 F</span><button class="btn-cmd" onclick="ouvrirCommande(this.closest('.carte'))">COMMANDER</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BONNETS -->
+  <div class="produits-panel" id="panel-bonnet">
+    <div class="prod-grille" id="grille-bonnet">
+      <div class="carte" data-couleur="blanc" data-id="bonnet-blanc" data-nom="Bonnet BIGDREAM — Blanc" data-prix="8000" data-icon="🧢" data-tailles="S/M,M/L,L/XL">
+        <div class="carte-img"><img src="bonnet_fond_blanc (1).jpeg" alt="Bonnet Blanc"><span class="badge">BLANC</span></div>
+        <div class="carte-body">
+          <p class="carte-nom">BONNET BIGDREAM — BLANC</p>
+          <p class="carte-desc">Acrylique doux · Taille unique · Logo brodé frontal</p>
+          <div class="tailles"><div class="taille">S/M</div><div class="taille">M/L</div><div class="taille">L/XL</div></div>
+          <div class="carte-footer"><span class="carte-prix">8 000 F</span><button class="btn-cmd" onclick="ouvrirCommande(this.closest('.carte'))">COMMANDER</button></div>
+        </div>
+      </div>
+      <div class="carte" data-couleur="noir" data-id="bonnet-noir" data-nom="Bonnet BIGDREAM — Noir" data-prix="8000" data-icon="🧢" data-tailles="S/M,M/L,L/XL">
+        <div class="carte-img"><img src="bonnet_fond_blanc (1).jpeg" alt="Bonnet Noir"><span class="badge">NOIR</span></div>
+        <div class="carte-body">
+          <p class="carte-nom">BONNET BIGDREAM — NOIR</p>
+          <p class="carte-desc">Laine mélangée · Logo script cursive · Revers doux</p>
+          <div class="tailles"><div class="taille">S/M</div><div class="taille">M/L</div><div class="taille">L/XL</div></div>
+          <div class="carte-footer"><span class="carte-prix">8 000 F</span><button class="btn-cmd" onclick="ouvrirCommande(this.closest('.carte'))">COMMANDER</button></div>
+        </div>
+      </div>
+      <div class="carte" data-couleur="gris" data-id="bonnet-gris" data-nom="Bonnet BIGDREAM — Gris" data-prix="8000" data-icon="🧢" data-tailles="S/M,M/L,L/XL">
+        <div class="carte-img"><img src="bonnet_fond_blanc (1).jpeg" alt="Bonnet Gris"><span class="badge">GRIS</span></div>
+        <div class="carte-body">
+          <p class="carte-nom">BONNET BIGDREAM — GRIS</p>
+          <p class="carte-desc">Acrylique doux · Taille unique · Logo brodé frontal</p>
+          <div class="tailles"><div class="taille">S/M</div><div class="taille">M/L</div><div class="taille">L/XL</div></div>
+          <div class="carte-footer"><span class="carte-prix">8 000 F</span><button class="btn-cmd" onclick="ouvrirCommande(this.closest('.carte'))">COMMANDER</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLLANTS -->
+  <div class="produits-panel" id="panel-collant">
+    <div class="prod-grille" id="grille-collant">
+      <div class="carte" data-couleur="noir" data-id="collant-noir" data-nom="Collant BIGDREAM — Noir" data-prix="10000" data-icon="🩱" data-tailles="XS,S,M,L,XL,XXL">
+        <div class="carte-img"><img src="collant bigdream.jpeg" alt="Collant Noir"><span class="badge">NOIR</span></div>
+        <div class="carte-body">
+          <p class="carte-nom">COLLANT BIGDREAM — NOIR</p>
+          <p class="carte-desc">Polyester stretch · Coupe ajustée · Logo imprimé cuisse</p>
+          <div class="tailles"><div class="taille">XS</div><div class="taille">S</div><div class="taille">M</div><div class="taille">L</div><div class="taille">XL</div><div class="taille">XXL</div></div>
+          <div class="carte-footer"><span class="carte-prix">10 000 F</span><button class="btn-cmd" onclick="ouvrirCommande(this.closest('.carte'))">COMMANDER</button></div>
+        </div>
+      </div>
+      <div class="carte" data-couleur="gris" data-id="collant-gris" data-nom="Collant BIGDREAM — Gris" data-prix="10000" data-icon="🩱" data-tailles="XS,S,M,L,XL,XXL">
+        <div class="carte-img"><img src="collant bigdream.jpeg" alt="Collant Gris"><span class="badge">GRIS</span></div>
+        <div class="carte-body">
+          <p class="carte-nom">COLLANT BIGDREAM — GRIS</p>
+          <p class="carte-desc">Polyester stretch · Coupe ajustée · Logo imprimé cuisse</p>
+          <div class="tailles"><div class="taille">XS</div><div class="taille">S</div><div class="taille">M</div><div class="taille">L</div><div class="taille">XL</div><div class="taille">XXL</div></div>
+          <div class="carte-footer"><span class="carte-prix">10 000 F</span><button class="btn-cmd" onclick="ouvrirCommande(this.closest('.carte'))">COMMANDER</button></div>
+        </div>
+      </div>
+      <div class="carte" data-couleur="blanc" data-id="collant-blanc" data-nom="Collant BIGDREAM — Blanc" data-prix="10000" data-icon="🩱" data-tailles="XS,S,M,L,XL">
+        <div class="carte-img"><img src="collant bigdream.jpeg" alt="Collant Blanc"><span class="badge">BLANC</span></div>
+        <div class="carte-body">
+          <p class="carte-nom">COLLANT BIGDREAM — BLANC</p>
+          <p class="carte-desc">Polyester stretch · Coupe ajustée · Logo imprimé cuisse</p>
+          <div class="tailles"><div class="taille">XS</div><div class="taille">S</div><div class="taille">M</div><div class="taille">L</div><div class="taille">XL</div><div class="taille">XXL</div></div>
+          <div class="carte-footer"><span class="carte-prix">10 000 F</span><button class="btn-cmd" onclick="ouvrirCommande(this.closest('.carte'))">COMMANDER</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- À PROPOS -->
+<section id="apropos">
+  <p class="section-label reveal">Notre Histoire</p>
+  <h2 class="section-heading reveal">À PROPOS</h2>
+  <div class="section-line"></div>
+  <div class="apropos-inner reveal">
+    <div class="apropos-text">
+      <h2>BIGDREAM<span> — DAKAR</span></h2>
+      <p>Née à Dakar, <strong>BIGDREAM</strong> est bien plus qu'une marque de vêtements. C'est un état d'esprit. Elle incarne l'audace, la liberté et l'ambition de ceux qui n'ont pas peur de rêver grand.</p>
+      <p>À travers des collections modernes et intemporelles, BIGDREAM s'adresse à ceux qui osent affirmer leur style tout en poursuivant leurs rêves avec détermination.</p>
+      <p>Chaque pièce est conçue avec soin, alliant confort et qualité, pour que chacun puisse se sentir unique et inspiré.</p>
+      <p>Les designs sont minimalistes mais percutants, parfaits pour ceux qui recherchent l'authenticité et l'élégance sans compromis.</p>
+      <p><strong>BIGDREAM</strong>, c'est l'invitation à porter son rêve, à se démarquer et à vivre pleinement.</p>
+      <p><strong>PURSUE YOUR DREAM. CE N'EST PAS JUSTE UN SLOGAN — C'EST NOTRE RAISON D'ÊTRE.</strong></p>
+    </div>
+    <div class="apropos-img">
+      <img src="BIGDREAM LOGO.jpeg" alt="BIGDREAM Logo" onerror="this.style.padding='80px';this.style.background='#111'">
+    </div>
+  </div>
+  <div class="apropos-values">
+    <div class="val-card reveal"><i class="fa-solid fa-gem"></i><h4>QUALITÉ</h4><p>Matières soigneusement sélectionnées pour un confort et une durabilité maximaux.</p></div>
+    <div class="val-card reveal" style="transition-delay:0.12s"><i class="fa-solid fa-fire"></i><h4>STYLE</h4><p>Des designs qui fusionnent l'authenticité sénégalaise avec le streetwear mondial.</p></div>
+    <div class="val-card reveal" style="transition-delay:0.24s"><i class="fa-solid fa-star"></i><h4>AMBITION</h4><p>Chaque pièce est un rappel de poursuivre ses rêves sans compromis.</p></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label reveal">Nous Joindre</p>
+  <h2 class="section-heading reveal">CONTACT</h2>
+  <div class="section-line"></div>
+  <div class="contact-grid reveal">
+    <div class="contact-info">
+      <h3>ON EST LÀ POUR VOUS</h3>
+      <div class="contact-item">
+        <div class="contact-item-icon"><i class="fa-solid fa-location-dot"></i></div>
+        <div><p class="contact-item-label">Adresse</p><p class="contact-item-value">Dakar, Sénégal</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-icon"><i class="fa-solid fa-envelope"></i></div>
+        <div><p class="contact-item-label">Email</p><p class="contact-item-value">BIGDREAM@GMAIL.COM</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-icon"><i class="fa-brands fa-whatsapp"></i></div>
+        <div><p class="contact-item-label">WhatsApp</p><p class="contact-item-value">+221 76 933 81 43</p></div>
+      </div>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/bigdream_sn/" target="_blank" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@bigdream_000" target="_blank" class="social-btn"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="https://wa.me/221769338143" target="_blank" class="social-btn"><i class="fa-brands fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div class="contact-form-wrap">
+      <h3>ENVOYER UN MESSAGE</h3>
+      <div class="form-row">
+        <div class="form-group"><label>Nom *</label><input type="text" id="c-nom" placeholder="Votre nom"></div>
+        <div class="form-group"><label>Email *</label><input type="email" id="c-email" placeholder="votre@email.com"></div>
+      </div>
+      <div class="form-group"><label>Sujet</label><input type="text" id="c-sujet" placeholder="Objet de votre message"></div>
+      <div class="form-group"><label>Message *</label><textarea id="c-message" rows="5" placeholder="Votre message..."></textarea></div>
+      <button class="btn-submit" onclick="envoyerContact()" style="width:100%">ENVOYER LE MESSAGE</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid-slim reveal">
+      <div class="footer-col">
+        <h5>Menu</h5>
+        <ul>
+          <li><a href="#accueil">Accueil</a></li>
+          <li><a href="#produits">Produits</a></li>
+          <li><a href="#apropos">À Propos</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Produits</h5>
+        <ul>
+          <li><a href="#produits" onclick="scrollToTab('tshirt')">Tee-Shirts</a></li>
+          <li><a href="#produits" onclick="scrollToTab('bonnet')">Bonnets</a></li>
+          <li><a href="#produits" onclick="scrollToTab('collant')">Collants</a></li>
+          <li><a href="#">Politique de confidentialité</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 BIGDREAM — Dakar, Sénégal. Tous droits réservés.</span>
+      <span class="footer-copy">PURSUE YOUR DREAM</span>
+    </div>
+  </div>
+  <div class="ticker-banner">
+    <div class="ticker-track">
+      <span>PURSUE YOUR DREAM</span><span class="ticker-dot">✦</span>
+      <span>PURSUE YOUR DREAM</span><span class="ticker-dot">✦</span>
+      <span>PURSUE YOUR DREAM</span><span class="ticker-dot">✦</span>
+      <span>PURSUE YOUR DREAM</span><span class="ticker-dot">✦</span>
+      <span>PURSUE YOUR DREAM</span><span class="ticker-dot">✦</span>
+      <span>PURSUE YOUR DREAM</span><span class="ticker-dot">✦</span>
+      <span>PURSUE YOUR DREAM</span><span class="ticker-dot">✦</span>
+      <span>PURSUE YOUR DREAM</span><span class="ticker-dot">✦</span>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL COMMANDE -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>PASSER COMMANDE</h3>
+      <button class="modal-close" onclick="fermerModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-produit-info">
+      <div class="modal-produit-icon" id="modal-icon">👕</div>
+      <div>
+        <p class="modal-produit-nom" id="modal-nom">—</p>
+        <p class="modal-produit-prix" id="modal-prix">—</p>
+      </div>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="modal-produit-id">
+      <div class="form-row">
+        <div class="form-group"><label>Nom complet *</label><input type="text" id="o-nom" placeholder="Votre nom complet"></div>
+        <div class="form-group"><label>Téléphone *</label><input type="tel" id="o-telephone" placeholder="77 000 00 00"></div>
+      </div>
+      <div class="form-group"><label>Email (optionnel)</label><input type="email" id="o-email" placeholder="votre@email.com"></div>
+      <div class="form-group"><label>Adresse de livraison *</label><input type="text" id="o-adresse" placeholder="Quartier, rue, ville..."></div>
+      <div class="form-group"><label>Taille *</label><div class="tailles-modal" id="modal-tailles"></div></div>
+      <div class="form-group">
+        <label>Quantité *</label>
+        <select id="o-quantite">
+          <option value="1">1</option><option value="2">2</option>
+          <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+          <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+          <option value="9">9</option><option value="10">10</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Note (optionnel)</label><textarea id="o-note" rows="2" placeholder="Instructions spéciales..."></textarea></div>
+      <div class="total-row">
+        <span class="total-label">Total estimé</span>
+        <span class="total-val" id="modal-total">—</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="fermerModal()">ANNULER</button>
+      <button class="btn-submit" id="btn-confirmer" onclick="soumettreCommande()">CONFIRMER LA COMMANDE</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <i class="fa-solid fa-circle-check" id="toast-icon"></i>
+  <span id="toast-msg"></span>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     AGENT IA BIGDREAM — BOUTON FLOTTANT
+═══════════════════════════════════════════ -->
+<button id="bd-agent-btn" onclick="toggleAgent()" title="Assistant BIGDREAM">
+  <i class="fa-solid fa-robot" id="bd-agent-icon"></i>
+  <div id="bd-agent-notif"></div>
+</button>
+
+<div id="bd-agent-chat">
+  <div id="bd-chat-header">
+    <div class="bd-avatar">BD</div>
+    <div>
+      <div class="bd-hdr-name">BIGDREAM AI</div>
+      <div class="bd-hdr-status"><span class="bd-hdr-dot"></span>En ligne</div>
+    </div>
+    <button id="bd-chat-close" onclick="toggleAgent()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div id="bd-messages">
+    <div class="bd-msg bot">
+      Waw ! Bienvenue chez <strong>BIGDREAM</strong> 🔥<br>
+      Je suis ton assistant. Pose-moi n'importe quelle question sur nos produits, tailles, livraison ou commandes !
+      <div class="bd-quick-btns">
+        <button class="bd-qbtn" onclick="bdSendQuick('Quels produits avez-vous ?')">Nos produits</button>
+        <button class="bd-qbtn" onclick="bdSendQuick('Comment commander ?')">Commander</button>
+        <button class="bd-qbtn" onclick="bdSendQuick('Livrez-vous à Dakar ?')">Livraison</button>
+        <button class="bd-qbtn" onclick="bdSendQuick('Quels sont vos prix ?')">Prix</button>
+      </div>
+    </div>
+  </div>
+  <div id="bd-typing"><span></span><span></span><span></span></div>
+  <div id="bd-chat-input">
+    <input id="bd-user-input" type="text" placeholder="Écris ton message..." onkeydown="if(event.key==='Enter')bdSendMsg()"/>
+    <button id="bd-send" onclick="bdSendMsg()"><i class="fa-solid fa-paper-plane"></i></button>
+  </div>
+</div>
+
+<script>
+  /* ══ CONFIG API ══ */
+  const API_URL = 'http://localhost:5000';
+  const WA_NUM  = '221769338143';
+
+  /* ══ NAVBAR ══ */
+  const menuBtn = document.getElementById('menuBtn');
+  const navDropdown = document.getElementById('navDropdown');
+  const menuIcon = document.getElementById('menuIcon');
+  menuBtn.addEventListener('click', () => {
+    const open = navDropdown.classList.toggle('open');
+    menuBtn.classList.toggle('open', open);
+    menuIcon.className = open ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+    menuBtn.setAttribute('aria-expanded', open);
+  });
+  document.addEventListener('click', e => {
+    if (!menuBtn.contains(e.target) && !navDropdown.contains(e.target)) {
+      navDropdown.classList.remove('open');
+      menuBtn.classList.remove('open');
+      menuIcon.className = 'fa-solid fa-bars';
+    }
+  });
+  navDropdown.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navDropdown.classList.remove('open');
+    menuBtn.classList.remove('open');
+    menuIcon.className = 'fa-solid fa-bars';
+  }));
+
+  /* ══ ONGLETS ══ */
+  function ouvrirTab(tab, btn) {
+    document.querySelectorAll('.produits-panel').forEach(p => p.classList.remove('actif'));
+    document.querySelectorAll('.color-filters').forEach(f => f.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('actif'));
+    document.getElementById('panel-' + tab).classList.add('actif');
+    document.getElementById('cf-' + tab).style.display = 'flex';
+    if (btn) btn.classList.add('actif');
+    const cf = document.getElementById('cf-' + tab);
+    cf.querySelectorAll('.color-btn').forEach(b => b.classList.remove('actif'));
+    cf.querySelector('.color-btn').classList.add('actif');
+    filtrer(tab, 'tous', cf.querySelector('.color-btn'));
+    document.querySelectorAll('#grille-' + tab + ' .carte').forEach((c, i) => {
+      c.style.animation = 'none';
+      setTimeout(() => {
+        c.style.animation = 'cardUp 0.45s ease both';
+        c.style.animationDelay = (0.04 + i * 0.07) + 's';
+      }, 10);
+    });
+  }
+
+  function filtrer(cat, couleur, btn) {
+    const grille = document.getElementById('grille-' + cat);
+    if (!grille) return;
+    document.querySelectorAll('#cf-' + cat + ' .color-btn').forEach(b => b.classList.remove('actif'));
+    if (btn) btn.classList.add('actif');
+    grille.querySelectorAll('.carte').forEach((carte, i) => {
+      const match = couleur === 'tous' || carte.dataset.couleur === couleur;
+      carte.style.display = match ? 'block' : 'none';
+      if (match) {
+        carte.style.animation = 'none';
+        setTimeout(() => {
+          carte.style.animation = 'cardUp 0.4s ease both';
+          carte.style.animationDelay = (i * 0.06) + 's';
+        }, 10);
+      }
+    });
+  }
+
+  function scrollToTab(tab) {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const idx = { tshirt: 0, bonnet: 1, collant: 2 }[tab] ?? 0;
+    ouvrirTab(tab, tabBtns[idx]);
+    setTimeout(() => document.getElementById('produits').scrollIntoView({ behavior: 'smooth' }), 50);
+  }
+
+  document.addEventListener('click', e => {
+    if (e.target.classList.contains('taille')) {
+      e.target.closest('.tailles').querySelectorAll('.taille').forEach(x => x.classList.remove('sel'));
+      e.target.classList.add('sel');
+    }
+  });
+
+  /* ══ MODAL COMMANDE ══ */
+  let produitEnCours = null;
+  let tailleSelectionnee = null;
+
+  function ouvrirCommande(carte) {
+    produitEnCours = {
+      id:      carte.dataset.id,
+      nom:     carte.dataset.nom,
+      prix:    parseInt(carte.dataset.prix),
+      icon:    carte.dataset.icon,
+      tailles: carte.dataset.tailles.split(',')
+    };
+    tailleSelectionnee = null;
+    document.getElementById('modal-icon').textContent  = produitEnCours.icon;
+    document.getElementById('modal-nom').textContent   = produitEnCours.nom;
+    document.getElementById('modal-prix').textContent  = produitEnCours.prix.toLocaleString('fr-FR') + ' F CFA / unité';
+    document.getElementById('modal-produit-id').value  = produitEnCours.id;
+    document.getElementById('modal-total').textContent = produitEnCours.prix.toLocaleString('fr-FR') + ' F';
+    const cont = document.getElementById('modal-tailles');
+    cont.innerHTML = '';
+    produitEnCours.tailles.forEach(t => {
+      const d = document.createElement('div');
+      d.className = 'taille-opt';
+      d.textContent = t;
+      d.onclick = () => {
+        cont.querySelectorAll('.taille-opt').forEach(x => x.classList.remove('sel'));
+        d.classList.add('sel');
+        tailleSelectionnee = t;
+      };
+      cont.appendChild(d);
+    });
+    ['o-nom','o-telephone','o-email','o-adresse','o-note'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('o-quantite').value = '1';
+    document.getElementById('btn-confirmer').disabled = false;
+    document.getElementById('btn-confirmer').innerHTML = 'CONFIRMER LA COMMANDE';
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  document.getElementById('o-quantite').addEventListener('change', function() {
+    if (!produitEnCours) return;
+    document.getElementById('modal-total').textContent =
+      (produitEnCours.prix * parseInt(this.value)).toLocaleString('fr-FR') + ' F';
+  });
+
+  function fermerModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay')) fermerModal();
+  });
+
+  async function soumettreCommande() {
+    const nom       = document.getElementById('o-nom').value.trim();
+    const telephone = document.getElementById('o-telephone').value.trim();
+    const adresse   = document.getElementById('o-adresse').value.trim();
+    const email     = document.getElementById('o-email').value.trim();
+    const note      = document.getElementById('o-note').value.trim();
+    const qte       = parseInt(document.getElementById('o-quantite').value);
+    if (!nom || !telephone || !adresse) { afficherToast('Veuillez remplir tous les champs obligatoires.', 'error'); return; }
+    if (!tailleSelectionnee) { afficherToast('Veuillez sélectionner une taille.', 'error'); return; }
+    const btnConfirmer = document.getElementById('btn-confirmer');
+    btnConfirmer.disabled = true;
+    btnConfirmer.innerHTML = '<span class="spinner"></span>ENVOI EN COURS...';
+    try {
+      const response = await fetch(API_URL + '/commandes', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client: nom, telephone, produit: produitEnCours.nom, taille: tailleSelectionnee, quantite: qte, prix: produitEnCours.prix, adresse, email, note })
+      });
+      if (response.ok) console.log('✅ Commande enregistrée dans le panel admin');
+    } catch (err) { console.warn('⚠️ Backend non connecté'); }
+    const total = (produitEnCours.prix * qte).toLocaleString('fr-FR');
+    const msg = encodeURIComponent(
+      `🛍️ COMMANDE BIGDREAM\n\nProduit : ${produitEnCours.nom}\nTaille  : ${tailleSelectionnee}\nQuantité: ${qte}\nTotal   : ${total} F CFA\n\n👤 Nom      : ${nom}\n📞 Tél      : ${telephone}\n📍 Adresse  : ${adresse}` +
+      (email ? `\n📧 Email    : ${email}` : '') + (note ? `\n💬 Note     : ${note}` : '')
+    );
+    fermerModal();
+    showSuccessAnimation(`https://wa.me/${WA_NUM}?text=${msg}`);
+  }
+
+  /* ══ CONTACT ══ */
+  function envoyerContact() {
+    const nom = document.getElementById('c-nom').value.trim();
+    const email = document.getElementById('c-email').value.trim();
+    const message = document.getElementById('c-message').value.trim();
+    if (!nom || !email || !message) { afficherToast('Veuillez remplir tous les champs obligatoires.', 'error'); return; }
+    const sujet = document.getElementById('c-sujet').value.trim();
+    const msg = encodeURIComponent(`📩 MESSAGE BIGDREAM\n\nNom  : ${nom}\nEmail: ${email}\n` + (sujet ? `Sujet: ${sujet}\n` : '') + `\n${message}`);
+    ['c-nom','c-email','c-sujet','c-message'].forEach(id => document.getElementById(id).value = '');
+    afficherToast('Message envoyé avec succès !', 'success');
+    setTimeout(() => window.open('https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox' + msg, '_blank'), 900);
+  }
+
+  /* ══ TOAST ══ */
+  function afficherToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    const icon = document.getElementById('toast-icon');
+    document.getElementById('toast-msg').textContent = msg;
+    icon.className = type === 'success' ? 'fa-solid fa-circle-check' : type === 'loading' ? 'fa-solid fa-spinner fa-spin' : 'fa-solid fa-circle-xmark';
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 4200);
+  }
+
+  /* ══ SCROLL REVEAL ══ */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ══════════════════════════════════════
+     AGENT IA BIGDREAM — Sans API
+  ══════════════════════════════════════ */
+  const BD_KB = {
+    produits: {
+      tshirt:  { nom: 'Tee-shirt', prix: 12000, couleurs: ['blanc','noir','gris'], tailles: 'XS à XXL' },
+      bonnet:  { nom: 'Bonnet',    prix: 8000,  couleurs: ['blanc','noir','gris'], tailles: 'S/M à L/XL' },
+      collant: { nom: 'Collant',   prix: 10000, couleurs: ['noir','gris','blanc'], tailles: 'XS à XXL' }
+    }
+  };
+
+  function bdRepondre(msg) {
+    const m = msg.toLowerCase().trim();
+
+    if (/^(salut|bonjour|hello|hi|salam|waw|yo)/.test(m))
+      return `Waw, ça va ! 👋 Bienvenue chez <strong>BIGDREAM</strong>. Comment je peux t'aider ?`;
+
+    if (m.includes('prix') || m.includes('combien') || m.includes('coûte') || m.includes('tarif')) {
+      if (m.includes('tshirt') || m.includes('t-shirt') || m.includes('tee'))
+        return `Le tee-shirt BIGDREAM est à <strong>12 000 F CFA</strong> 🔥 Blanc, noir ou gris.`;
+      if (m.includes('bonnet'))
+        return `Le bonnet BIGDREAM est à <strong>8 000 F CFA</strong> 🧢`;
+      if (m.includes('collant'))
+        return `Le collant BIGDREAM est à <strong>10 000 F CFA</strong> 🩱`;
+      return `Nos prix :<br>👕 Tee-shirt → <strong>12 000 F</strong><br>🧢 Bonnet → <strong>8 000 F</strong><br>🩱 Collant → <strong>10 000 F</strong>`;
+    }
+
+    if (m.includes('produit') || m.includes('collection') || m.includes('catalogue') || m.includes('article'))
+      return `Collection 2026 🔥<br>👕 <strong>Tee-shirts</strong> — 12 000 F (blanc, noir, gris)<br>🧢 <strong>Bonnets</strong> — 8 000 F (blanc, noir, gris)<br>🩱 <strong>Collants</strong> — 10 000 F (noir, gris, blanc)`;
+
+    if (m.includes('taille') || m.includes('size'))
+      return `Tee-shirts & collants : <strong>XS au XXL</strong> 📏<br>Bonnets : <strong>S/M à L/XL</strong>`;
+
+    if (m.includes('couleur') || m.includes('noir') || m.includes('blanc') || m.includes('gris'))
+      return `3 coloris dispo : <strong>Blanc 🤍 Noir 🖤 Gris 🩶</strong><br>Filtre par couleur sur la page produits !`;
+
+    if (m.includes('livr') || m.includes('expéd') || m.includes('délai') || m.includes('recevoir'))
+      return `📦 Livraison :<br>• Dakar & banlieue → <strong>48h</strong><br>• Autres villes Sénégal → <strong>3 à 5 jours</strong>`;
+
+    if (m.includes('payer') || m.includes('paiement') || m.includes('wave') || m.includes('orange money') || m.includes('cash'))
+      return `On accepte :<br>💛 <strong>Orange Money</strong><br>🔵 <strong>Wave</strong><br>💵 <strong>Cash à la livraison</strong>`;
+
+    if (m.includes('commander') || m.includes('commande') || m.includes('acheter') || m.includes('achat'))
+      return `Pour commander 🛍️<br>1. Clique sur <strong>"Commander"</strong> sur la fiche produit<br>2. Ou WhatsApp : <strong>+221 76 933 81 43</strong>`;
+
+    if (m.includes('whatsapp') || m.includes('contact') || m.includes('joindre') || m.includes('numéro') || m.includes('numero'))
+      return `📱 WhatsApp : <strong>+221 76 933 81 43</strong><br>📸 Instagram : <strong>@bigdream_sn</strong><br>🎵 TikTok : <strong>@bigdream_000</strong>`;
+
+    if (m.includes('qualité') || m.includes('matière') || m.includes('coton') || m.includes('tissu'))
+      return `Que du <strong>coton premium 100%</strong> pour les tee-shirts 👕 Confort et durabilité garantis 🔥`;
+
+    if (m.includes('bigdream') || m.includes('marque') || m.includes('histoire'))
+      return `<strong>BIGDREAM</strong> est une marque streetwear 100% Dakaroise 🇸🇳<br><em>"Pursue Your Dream"</em> — audace, liberté, ambition 🔥`;
+
+    if (m.includes('merci') || m.includes('thank') || m.includes('jërejëf'))
+      return `Avec plaisir ! 🙏 <strong>Pursue Your Dream</strong> 🔥`;
+
+    return `Je peux t'aider sur :<br>• Nos <strong>produits</strong> et prix<br>• Les <strong>tailles</strong><br>• La <strong>livraison</strong><br>• Comment <strong>commander</strong><br>• Nos <strong>contacts</strong>`;
+  }
+
+  const bdHistory = [];
+  let bdIsOpen = false;
+  let bdFirstOpen = true;
+
+  function toggleAgent() {
+    bdIsOpen = !bdIsOpen;
+    const chat  = document.getElementById('bd-agent-chat');
+    const btn   = document.getElementById('bd-agent-btn');
+    const icon  = document.getElementById('bd-agent-icon');
+    const notif = document.getElementById('bd-agent-notif');
+    if (bdIsOpen) {
+      chat.classList.add('open');
+      btn.classList.add('open');
+      icon.className = 'fa-solid fa-xmark';
+      notif.style.display = 'none';
+      if (bdFirstOpen) { bdFirstOpen = false; setTimeout(() => document.getElementById('bd-user-input').focus(), 300); }
+    } else {
+      chat.classList.remove('open');
+      btn.classList.remove('open');
+      icon.className = 'fa-solid fa-robot';
+    }
+  }
+
+  function bdAddMsg(text, role) {
+    const msgs = document.getElementById('bd-messages');
+    const div  = document.createElement('div');
+    div.className = 'bd-msg ' + (role === 'user' ? 'user' : 'bot');
+    div.innerHTML = text;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function bdSendQuick(text) {
+    document.getElementById('bd-user-input').value = text;
+    bdSendMsg();
+  }
+
+  const GROQ_KEY = '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';
+  const GROQ_SYSTEM = `Tu es l'assistant officiel de BIGDREAM, une marque streetwear 100% Dakaroise. Tu réponds en français avec un ton jeune, stylé et chaleureux. Tu peux utiliser des mots comme "waw", "dope", "fire" naturellement. Sois concis (max 3-4 phrases).
+
+CATALOGUE :
+- Tee-shirts (blanc, noir, gris) : 12 000 F CFA — coton premium, oversize, logo brodé, XS à XXL
+- Bonnets (blanc, noir, gris) : 8 000 F CFA — acrylique doux, logo brodé, S/M à L/XL  
+- Collants (noir, gris, blanc) : 10 000 F CFA — polyester stretch, logo cuisse, XS à XXL
+
+INFOS :
+- Livraison Dakar & banlieue : 48h
+- Autres villes Sénégal : 3-5 jours
+- Paiement : Orange Money, Wave, Cash à la livraison
+- WhatsApp : +221 76 933 81 43
+- Instagram : @bigdream_sn | TikTok : @bigdream_000
+
+Pour commander : dire de cliquer sur "Commander" sur la fiche produit ou contacter le WhatsApp.`;
+
+  async function bdSendMsg() {
+    const input = document.getElementById('bd-user-input');
+    const text  = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    bdAddMsg(text, 'user');
+    bdHistory.push({ role: 'user', content: text });
+
+    const typing = document.getElementById('bd-typing');
+    const msgs   = document.getElementById('bd-messages');
+    typing.style.display = 'flex';
+    msgs.appendChild(typing);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    try {
+      const res = await fetch(API_URL + '/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: GROQ_SYSTEM },
+            ...bdHistory
+          ]
+        })
+      });
+      const data = await res.json();
+      typing.style.display = 'none';
+      const reply = data.reply || 'Désolé, une erreur est survenue 🙏';
+      bdAddMsg(reply, 'bot');
+      bdHistory.push({ role: 'assistant', content: reply });
+    } catch(e) {
+      typing.style.display = 'none';
+      // Fallback sans API
+      const reply = bdRepondre(bdHistory[bdHistory.length-1]?.content || '');
+      bdAddMsg(reply, 'bot');
+      bdHistory.push({ role: 'assistant', content: reply });
+    }
+  }
+
+
+  /* ═══ LOADING SCREEN — SVG MONTRE ═══ */
+  (function() {
+    const toRad = deg => deg * Math.PI / 180;
+
+    function setHand(id, angleDeg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const cx = 100, cy = 100;
+      const lengths = { 'bd-hand-h': [32,16], 'bd-hand-m': [44,12], 'bd-hand-s': [48,12] };
+      const [lenFwd, lenBack] = lengths[id];
+      const rad = toRad(angleDeg - 90);
+      const x2 = cx + Math.cos(rad) * lenFwd;
+      const y2 = cy + Math.sin(rad) * lenFwd;
+      const x1 = cx - Math.cos(rad) * lenBack;
+      const y1 = cy - Math.sin(rad) * lenBack;
+      el.setAttribute('x1', x1.toFixed(2));
+      el.setAttribute('y1', y1.toFixed(2));
+      el.setAttribute('x2', x2.toFixed(2));
+      el.setAttribute('y2', y2.toFixed(2));
+    }
+
+    let startTime = null;
+    function animateHands(ts) {
+      if (!startTime) startTime = ts;
+      const elapsed = (ts - startTime) / 1000; // secondes
+      // Secondes : 1 tour en 1s (rapide)
+      const secAngle = (elapsed % 1) * 360;
+      // Minutes : 1 tour en 3s
+      const minAngle = (elapsed % 3) / 3 * 360;
+      // Heures : 1 tour en 10s
+      const hourAngle = (elapsed % 10) / 10 * 360;
+      setHand('bd-hand-s', secAngle);
+      setHand('bd-hand-m', minAngle);
+      setHand('bd-hand-h', hourAngle);
+      if (document.getElementById('bd-loader') && !document.getElementById('bd-loader').classList.contains('hide')) {
+        requestAnimationFrame(animateHands);
+      }
+    }
+    requestAnimationFrame(animateHands);
+
+    // Compteur %
+    const pct = document.getElementById('bd-loader-pct');
+    let count = 0;
+    const interval = setInterval(() => {
+      count = Math.min(count + Math.floor(Math.random() * 6 + 2), 99);
+      if (pct) pct.textContent = count + '%';
+      if (count >= 99) clearInterval(interval);
+    }, 85);
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        count = 100;
+        if (pct) pct.textContent = '100%';
+        clearInterval(interval);
+        setTimeout(() => {
+          const loader = document.getElementById('bd-loader');
+          if (loader) loader.classList.add('hide');
+          setTimeout(() => {
+            if (loader) loader.style.display = 'none';
+          }, 800);
+        }, 300);
+      }, 2800);
+    });
+  })();
+
+  /* ═══ SUCCESS ANIMATION ═══ */
+  let _waUrl = '';
+
+  function showSuccessAnimation(waUrl) {
+    _waUrl = waUrl;
+    const overlay = document.getElementById('bd-success-overlay');
+    overlay.classList.add('show');
+    spawnParticles();
+
+    document.getElementById('bd-success-wa-btn').onclick = () => {
+      overlay.classList.remove('show');
+      window.open(_waUrl, '_blank');
+    };
+
+    setTimeout(() => {
+      overlay.classList.remove('show');
+      window.open(_waUrl, '_blank');
+    }, 3500);
+  }
+
+  function spawnParticles() {
+    const container = document.getElementById('bd-particles');
+    container.innerHTML = '';
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    for (let i = 0; i < 22; i++) {
+      const p = document.createElement('div');
+      p.className = 'bd-particle';
+      const angle = (i / 22) * 360;
+      const dist  = 80 + Math.random() * 160;
+      const tx    = Math.cos(angle * Math.PI / 180) * dist;
+      const ty    = Math.sin(angle * Math.PI / 180) * dist - 60;
+      p.style.cssText = `
+        left: ${cx}px; top: ${cy}px;
+        --tx: ${tx}px; --ty: ${ty}px;
+        animation-delay: ${Math.random() * 0.3}s;
+        background: ${['#fff','#aaa','#555'][Math.floor(Math.random()*3)]};
+        width: ${4 + Math.random()*6}px;
+        height: ${4 + Math.random()*6}px;
+      `;
+      container.appendChild(p);
+    }
+  }
+
+  document.addEventListener('click', e => {
+    const chat = document.getElementById('bd-agent-chat');
+    const btn  = document.getElementById('bd-agent-btn');
+    if (bdIsOpen && !chat.contains(e.target) && !btn.contains(e.target)) toggleAgent();
+  });
+</script>
+</body>
+</html>
